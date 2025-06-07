@@ -1,0 +1,152 @@
+# Docker Compose pour l'environnement de développement Orion
+version: '3.8'
+
+services:
+  # Elasticsearch pour les événements de sécurité
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: orion-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - orion-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # InfluxDB pour les métriques temporelles
+  influxdb:
+    image: influxdb:2.7
+    container_name: orion-influxdb
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=orion
+      - DOCKER_INFLUXDB_INIT_PASSWORD=orion-dev-password
+      - DOCKER_INFLUXDB_INIT_ORG=orion
+      - DOCKER_INFLUXDB_INIT_BUCKET=security_metrics
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=orion-dev-token
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+      - influxdb_config:/etc/influxdb2
+    networks:
+      - orion-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8086/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis pour le cache et les sessions
+  redis:
+    image: redis:7.2-alpine
+    container_name: orion-redis
+    command: redis-server --appendonly yes --requirepass orion-dev-password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - orion-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Kibana pour la visualisation (optionnel en dev)
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.1
+    container_name: orion-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=false
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - orion-network
+    profiles:
+      - visualization  # Démarrer avec: docker-compose --profile visualization up
+
+  # Grafana pour les métriques (optionnel en dev)
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: orion-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=orion-dev-password
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    networks:
+      - orion-network
+    profiles:
+      - visualization
+
+  # Service Orion Core (à développer)
+  orion-core:
+    build:
+      context: .
+      dockerfile: deployments/docker/Dockerfile.core
+    container_name: orion-core
+    environment:
+      - ORION_ENVIRONMENT=development
+      - ORION_DEBUG=true
+      - ORION_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ORION_INFLUXDB_URL=http://influxdb:8086
+      - ORION_REDIS_URL=redis://:orion-dev-password@redis:6379
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config:/opt/orion/config
+      - ./logs:/opt/orion/logs
+      - ./models:/opt/orion/models
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - orion-network
+    profiles:
+      - app  # Démarrer avec: docker-compose --profile app up
+    restart: unless-stopped
+
+volumes:
+  elasticsearch_data:
+    driver: local
+  influxdb_data:
+    driver: local
+  influxdb_config:
+    driver: local
+  redis_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  orion-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

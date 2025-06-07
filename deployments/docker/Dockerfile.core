@@ -1,0 +1,61 @@
+# Dockerfile pour le service Orion Core
+FROM python:3.11-slim
+
+# Métadonnées
+LABEL maintainer="Orion Security Team <team@orion-project.com>"
+LABEL version="0.1.0-alpha"
+LABEL description="Orion AD Guardian - Core Engine"
+
+# Variables d'environnement
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    ORION_HOME=/opt/orion
+
+# Installation des dépendances système
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential \
+    libldap2-dev \
+    libsasl2-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Création de l'utilisateur orion
+RUN groupadd -r orion && useradd -r -g orion orion
+
+# Création des répertoires
+RUN mkdir -p $ORION_HOME/{config,logs,models,data} && \
+    chown -R orion:orion $ORION_HOME
+
+# Copie des fichiers de dépendances
+COPY requirements.txt /tmp/
+
+# Installation des dépendances Python
+RUN pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
+
+# Copie du code source
+COPY --chown=orion:orion src/ $ORION_HOME/src/
+COPY --chown=orion:orion config/example.yaml $ORION_HOME/config/default.yaml
+
+# Configuration du PYTHONPATH
+ENV PYTHONPATH=$ORION_HOME
+
+# Basculement vers l'utilisateur orion
+USER orion
+
+WORKDIR $ORION_HOME
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Port exposé
+EXPOSE 8000
+
+# Point d'entrée
+CMD ["python", "-m", "uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
