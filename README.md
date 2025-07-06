@@ -1,3 +1,5 @@
+![image](orion.png)
+
 # Orion AD Guardian
 
 <div align="center">
