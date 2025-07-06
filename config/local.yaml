@@ -1,0 +1,187 @@
+# Configuration Orion AD Guardian - Environnement de développement
+# Configuration adaptée pour l'environnement de test local
+
+# Configuration générale
+environment: "development"
+debug: true
+version: "0.1.0-alpha"
+
+# Configuration Active Directory - ENVIRONNEMENT DE TEST
+# ⚠️ ATTENTION : Ces paramètres sont pour un environnement de test uniquement
+ad_domain: "dev.orion.local"
+ad_domain_controllers:
+  - "dc1.dev.orion.local"
+  - "dc2.dev.orion.local"
+ad_service_account: "orion-service@dev.orion.local"
+# ad_service_password: "VOIR_VARIABLES_ENVIRONNEMENT"
+# Utilisez : export ORION_AD_PASSWORD="votre_mot_de_passe"
+
+# Bases de données
+database:
+  # Elasticsearch pour les événements
+  elasticsearch_url: "http://localhost:9200"
+  elasticsearch_username: "elastic"
+  elasticsearch_index_prefix: "orion"
+  
+  # InfluxDB pour les métriques
+  influxdb_url: "http://localhost:8086"
+  influxdb_org: "orion"
+  influxdb_bucket: "security_metrics"
+  
+  # Redis pour le cache
+  redis_url: "redis://localhost:6379"
+  redis_db: 0
+
+# Module Hydra - Déception
+hydra:
+  enabled: true
+  decoy_count: 25
+  decoy_refresh_interval: 3600  # 1 heure
+  
+  # Types de leurres
+  create_user_decoys: true
+  create_computer_decoys: true
+  create_group_decoys: true
+  create_gpo_decoys: false  # Attention : impact sur la production
+  
+  # Empoisonnement
+  poison_injection_enabled: true
+  poison_injection_rate: 0.05  # 5% en développement
+  
+  # Simulation d'activité
+  simulate_activity: true
+  activity_simulation_interval: 1800  # 30 minutes
+
+# Module Cassandra - IA
+cassandra:
+  enabled: true
+  
+  # Machine Learning
+  model_path: "./models"
+  retrain_interval: 86400  # 24 heures
+  min_training_samples: 100  # Réduit pour le développement
+  
+  # Analyse comportementale
+  baseline_learning_period: 86400  # 1 jour en dev (7 jours en prod)
+  anomaly_threshold: 0.7  # Plus sensible en développement
+  risk_score_threshold: 0.6
+  
+  # Fenêtres d'analyse
+  short_term_window: 300   # 5 minutes
+  medium_term_window: 1800 # 30 minutes
+  long_term_window: 7200   # 2 heures (réduit pour dev)
+  
+  # Features à analyser
+  analyze_logon_patterns: true
+  analyze_access_patterns: true
+  analyze_network_patterns: false  # Désactivé en dev
+  analyze_privilege_usage: true
+
+# Module Aegis - Remédiation
+aegis:
+  enabled: true
+  
+  # Actions automatiques (ATTENTION en production !)
+  auto_quarantine_enabled: false  # Désactivé en dev
+  auto_network_isolation_enabled: false
+  auto_rollback_enabled: false
+  
+  # Seuils d'action
+  quarantine_risk_threshold: 0.95  # Très élevé en dev
+  isolation_risk_threshold: 0.90
+  rollback_risk_threshold: 0.98
+  
+  # Durées
+  default_quarantine_duration: 300   # 5 minutes en dev
+  max_quarantine_duration: 1800      # 30 minutes en dev
+  
+  # Notifications
+  notify_on_quarantine: true
+  notify_on_isolation: true
+  notify_on_rollback: true
+  
+  # Intégrations
+  siem_integration_enabled: false
+  email_notifications_enabled: false  # Désactivé en dev
+  slack_notifications_enabled: false
+
+# Agents de collecte
+agent:
+  # Agent Active Directory
+  ad_agent_enabled: true
+  ad_polling_interval: 60  # Plus lent en développement
+  ad_event_types:
+    - "4624"  # Logon successful
+    - "4625"  # Logon failed
+    - "4634"  # Logoff
+    - "4720"  # User account created
+    - "4722"  # User account enabled
+    - "4724"  # Password reset
+    - "5136"  # Directory service object modified
+  
+  # Agent réseau
+  network_agent_enabled: false  # Désactivé en dev
+  network_monitoring_interfaces: []
+  
+  # Agent endpoint
+  endpoint_agent_enabled: false  # Désactivé en dev
+  endpoint_monitoring_processes: false
+  endpoint_monitoring_files: false
+  endpoint_monitoring_registry: false
+
+# Sécurité
+security:
+  # Chiffrement
+  encryption_enabled: true
+  encryption_algorithm: "AES-256-GCM"
+  key_rotation_interval: 604800  # 7 jours en dev
+  
+  # Authentification
+  jwt_secret_key: "dev-secret-key-change-in-production"
+  jwt_expiration_time: 7200  # 2 heures en dev
+  jwt_refresh_enabled: true
+  
+  # TLS
+  tls_enabled: false  # Désactivé en dev local
+  tls_cert_path: "./certs/orion.crt"
+  tls_key_path: "./certs/orion.key"
+  tls_ca_path: "./certs/ca.crt"
+  
+  # Audit
+  audit_enabled: true
+  audit_log_path: "./logs/audit.log"
+  audit_retention_days: 30  # Réduit en dev
+
+# Logging
+logging:
+  level: "DEBUG"  # Verbeux en développement
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_path: "./logs/orion.log"
+  max_file_size: 10485760  # 10 MB en dev
+  backup_count: 3
+  
+  # Logging structuré
+  structured_logging: true
+  json_format: false  # Plus lisible en dev
+  
+  # Logs spécialisés
+  security_log_path: "./logs/security.log"
+  performance_log_path: "./logs/performance.log"
+
+# Monitoring
+monitoring:
+  enabled: true
+  
+  # Métriques
+  prometheus_enabled: false  # Désactivé en dev
+  prometheus_port: 9090
+  metrics_collection_interval: 60
+  
+  # Health checks
+  health_check_interval: 60  # Plus lent en dev
+  health_check_timeout: 30
+  
+  # Alerting
+  alerting_enabled: false  # Désactivé en dev
+  alert_webhook_url: null
+  alert_email_recipients: [] 

@@ -155,3 +155,48 @@ Ce projet est propriétaire. Tous droits réservés.
 <p align="center">
   <strong>Orion - Parce que la meilleure défense est une attaque préventive</strong>
 </p>
+
+# Orion AD Guardian
+
+Orion AD Guardian est une application de sécurité Active Directory modulaire, avec backend FastAPI, agent d'événements AD simulés, et interface web React/TypeScript pour la visualisation en temps réel des alertes.
+
+## Fonctionnalités principales
+- Détection et génération d'alertes sur événements AD
+- Dashboard web en temps réel (React)
+- Actions interactives (remédiation, marquage comme lu)
+- Authentification par token
+- Statistiques, export, configuration dynamique
+- Déploiement Docker/production prêt à l'emploi
+
+## Notifications administrateur
+**Le système est conçu pour être branché facilement sur un système de notification externe** (mail, SMS, webhook, etc.).
+
+- Lorsqu'une alerte critique ou une remédiation est déclenchée, un appel à un module de notification peut être ajouté.
+- Exemple d'intégration possible :
+  - Module Python `notifier.py` (à créer dans `src/modules/`)
+  - Support SMTP, API SMS, Slack, webhook, etc.
+- La configuration (destinataires, type de notification) se fait dans le fichier de configuration (`.env` ou `config.yaml`).
+
+**Remarque :** Le module mail n'est pas intégré par défaut. Pour notifier l'administrateur, il suffit de brancher le système sur le module de notification de votre choix.
+
+## Déploiement
+- Voir `docker-compose.prod.yml` pour la stack complète (backend, frontend, agent, PostgreSQL, nginx, Prometheus, Grafana)
+- Script de déploiement : `scripts/deploy-production.sh`
+
+## Configuration
+- Exemple de configuration dans `config/production.env`
+- Personnalisation des ports, tokens, base de données, etc.
+
+## Extension
+- Pour ajouter un système de notification, créez un module Python dans `src/modules/` et appelez-le lors des alertes critiques ou remédiations.
+- Voir la section "Notifications administrateur" ci-dessus.
+
+## Contribution
+Voir `CONTRIBUTING.md`.
+
+## Sécurité
+Voir `SECURITY.md`.
+
+---
+
+Pour toute question ou extension, contactez l'équipe Orion AD Guardian.

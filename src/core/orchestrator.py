@@ -41,9 +41,13 @@ class Orchestrator:
         # État de l'orchestrateur
         self.is_running = False
         self.module_statuses: Dict[str, ModuleStatus] = {}
+        self._start_time = datetime.now()
         
         # Queue des événements
         self.event_queue: asyncio.Queue[SecurityEvent] = asyncio.Queue()
+        
+        # Liste des alertes pour l'interface web
+        self.alerts: List[Dict] = []
         
         self.logger.info("Orchestrateur Orion initialisé")
     
@@ -116,38 +120,66 @@ class Orchestrator:
             except Exception as e:
                 self.logger.error(f"Erreur lors du traitement d'événement : {e}")
     
+    def add_alert(self, alert_data: Dict) -> None:
+        """Ajoute une alerte à la liste pour l'interface web."""
+        alert_data['timestamp'] = datetime.now().isoformat()
+        alert_data['id'] = f"alert_{len(self.alerts)}_{datetime.now().timestamp()}"
+        self.alerts.append(alert_data)
+        
+        # Garder seulement les 100 dernières alertes
+        if len(self.alerts) > 100:
+            self.alerts = self.alerts[-100:]
+    
     async def _process_with_hydra(self, event: SecurityEvent) -> None:
         """Traite un événement avec le module Hydra."""
         try:
-            # Vérification si l'événement implique un leurre
-            if await self.hydra.is_decoy_interaction(event):
-                self.logger.warning(
-                    f"Interaction avec leurre détectée : {event.event_id}"
+            is_decoy = await self.hydra.is_decoy_interaction(event)
+            if is_decoy:
+                self.logger.critical(
+                    f"ALERTE HYDRA : Interaction avec un leurre détectée ! Événement: {event.event_id}, Utilisateur: {event.user_context.username}"
                 )
                 
-                # Remédiation immédiate via Aegis
-                await self.aegis.handle_decoy_interaction(event)
+                # Créer une alerte pour l'interface web
+                self.add_alert({
+                    'event_id': event.event_id,
+                    'source': 'Hydra',
+                    'risk_level': 'CRITICAL',
+                    'justification': f"Interaction détectée avec un leurre par l'utilisateur {event.user_context.username}",
+                    'user': event.user_context.username,
+                    'action_taken': 'quarantine_entity'
+                })
                 
+                await self.aegis.handle_decoy_interaction(event)
         except Exception as e:
-            self.logger.error(f"Erreur module Hydra : {e}")
+            self.logger.error(f"Erreur dans le module Hydra : {e}")
     
     async def _process_with_cassandra(self, event: SecurityEvent) -> None:
         """Traite un événement avec le module Cassandra."""
         try:
             # Analyse comportementale
-            risk_assessment = await self.cassandra.analyze_event(event)
-            
-            # Si le risque est élevé, déclencher une action
-            if risk_assessment.risk_level >= RiskLevel.HIGH:
+            analysis_result = await self.cassandra.analyze_event(event)
+            risk_score = analysis_result.risk_score if hasattr(analysis_result, 'risk_score') else analysis_result.get('risque', 1)
+            justification = analysis_result.factors.get('justification') if hasattr(analysis_result, 'factors') else analysis_result.get('justification', '')
+
+            # Si le risque est élevé ou critique, déclencher une action
+            if risk_score >= 0.8:  # 0.8 = HIGH, 1.0 = CRITICAL
+                risk_level = 'CRITICAL' if risk_score >= 0.9 else 'HIGH'
                 self.logger.warning(
-                    f"Risque élevé détecté : {risk_assessment.risk_score}"
+                    f"Risque élevé détecté : {risk_score} - {justification}"
                 )
                 
-                await self.aegis.handle_high_risk(
-                    event, 
-                    risk_assessment
-                )
+                # Créer une alerte pour l'interface web
+                self.add_alert({
+                    'event_id': event.event_id,
+                    'source': 'Cassandra',
+                    'risk_level': risk_level,
+                    'justification': justification,
+                    'user': event.user_context.username if event.user_context else 'Unknown',
+                    'risk_score': risk_score,
+                    'action_taken': 'handle_high_risk_event'
+                })
                 
+                await self.aegis.handle_high_risk_event(event, {'justification': justification})
         except Exception as e:
             self.logger.error(f"Erreur module Cassandra : {e}")
     

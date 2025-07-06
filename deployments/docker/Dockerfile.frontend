@@ -1,0 +1,32 @@
+# Dockerfile pour le frontend Orion AD Guardian
+FROM node:18-alpine AS builder
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers de dépendances
+COPY src/web/package*.json ./
+
+# Installer les dépendances
+RUN npm ci --only=production
+
+# Copier le code source
+COPY src/web/ .
+
+# Construire l'application
+RUN npm run build
+
+# Stage de production avec Nginx
+FROM nginx:alpine
+
+# Copier la configuration Nginx
+COPY deployments/docker/nginx.conf /etc/nginx/nginx.conf
+
+# Copier les fichiers construits
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Exposer le port
+EXPOSE 80
+
+# Point d'entrée
+CMD ["nginx", "-g", "daemon off;"] 
