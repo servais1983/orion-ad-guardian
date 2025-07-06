@@ -146,6 +146,19 @@ const AlertList: React.FC<AlertListProps> = ({
                   <span className="font-medium text-gray-600">Remédié:</span>
                   <span className="ml-2 text-gray-900">{alert.remediated ? 'Oui' : 'Non'}</span>
                 </div>
+                <div>
+                  <span className="font-medium text-gray-600">ID Événement:</span>
+                  <span className="ml-2 text-gray-900">{alert.event_id}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-gray-600">Actions de remédiation:</span>
+                  <span className="ml-2 text-gray-900">
+                    {alert.remediation_actions.length > 0 
+                      ? alert.remediation_actions.join(', ')
+                      : 'Aucune'
+                    }
+                  </span>
+                </div>
               </div>
             </div>
           </div>
