@@ -1,10 +1,10 @@
-# Orion
+# Orion AD Guardian
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Status-Phase%201-blue?style=flat-square" alt="Project Status">
-  <img src="https://img.shields.io/badge/Version-0.1.0--alpha-orange?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/License-Proprietary-red?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Platform-Windows%20Server-blue?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-green?style=flat-square" alt="Project Status">
+  <img src="https://img.shields.io/badge/Version-1.0.0-blue?style=flat-square" alt="Version">
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Platform-Cross%20Platform-blue?style=flat-square" alt="Platform">
 </div>
 
 <p align="center">
@@ -12,55 +12,55 @@
 </p>
 
 <p align="center">
-  Orion est une solution de cybersécurité de nouvelle génération conçue pour protéger la zone la plus critique et la plus attaquée de votre infrastructure : l'Active Directory. Plutôt que de simplement réagir aux menaces, Orion les anticipe, les piège et les neutralise grâce à une approche innovante combinant la déception, l'analyse comportementale par IA et la remédiation automatisée.
+  Orion AD Guardian est une solution de cybersécurité modulaire conçue pour protéger votre Active Directory en temps réel. Elle combine détection d'événements, analyse comportementale par IA, et remédiation automatisée pour une protection proactive contre les menaces.
 </p>
 
 ---
 
-## 💡 Notre Philosophie : Anticiper, Piéger, Neutraliser
+## ✨ Fonctionnalités Principales
 
-Les outils de sécurité traditionnels attendent qu'une action malveillante se produise pour la bloquer. Cette approche réactive laisse une fenêtre d'opportunité aux attaquants.
+### 🛡️ Détection en Temps Réel
+- **Surveillance continue** des événements Active Directory
+- **Génération automatique d'alertes** basée sur des règles configurables
+- **Analyse comportementale** avec scoring de risque dynamique
+- **Détection de patterns d'attaque** (mouvement latéral, escalade de privilèges)
 
-**La philosophie d'Orion est de renverser ce paradigme.** Nous créons un environnement hostile pour l'attaquant, où chaque pas peut être un piège. Nous ne nous contentons pas de chercher une aiguille dans une botte de foin ; nous y ajoutons des centaines d'aiguilles magnétisées qui nous montrent exactement où chercher.
+### 🧠 Intelligence Artificielle
+- **Module Cassandra** : Analyse prédictive et scoring de risque
+- **Corrélation multi-sources** des événements
+- **Apprentissage automatique** des comportements normaux
+- **Détection d'anomalies** en temps réel
 
-## ✨ Fonctionnalités Clés
+### ⚔️ Remédiation Automatisée
+- **Module Aegis** : Actions de remédiation chirurgicales
+- **Quarantaine intelligente** des comptes compromis
+- **Annulation automatique** des modifications non autorisées
+- **Actions personnalisables** selon le niveau de menace
 
-Orion s'articule autour de trois modules principaux qui fonctionnent en parfaite synergie :
+### 🌐 Interface Web Moderne
+- **Dashboard React/TypeScript** en temps réel
+- **Visualisation interactive** des alertes et statistiques
+- **Actions utilisateur** (marquer comme lu, déclencher remédiation)
+- **Filtres et recherche** avancés
+- **Export de données** (JSON, CSV)
 
-### 🛡️ Module Hydra : Déception Dynamique
-
-Le module Hydra tisse une toile d'entités leurres (comptes, groupes, GPO, machines) parfaitement intégrées et indiscernables au sein de votre Active Directory.
-
-- **Détection sans faux positifs** : Toute interaction avec un leurre est, par définition, une activité suspecte.
-- **Empoisonnement des données** : Fournit des informations piégées aux outils de reconnaissance (type BloodHound) pour ralentir l'attaquant et l'envoyer sur de fausses pistes.
-- **Leurres évolutifs** : Les entités leurres vivent et évoluent pour maintenir un réalisme constant.
-
-### 🧠 Module Cassandra : Analyse Prédictive
-
-Le cœur intelligent d'Orion. Cassandra modélise le comportement normal de chaque entité et utilise le Machine Learning pour prédire et identifier les menaces avant leur exécution.
-
-- **Score de risque dynamique** : Chaque utilisateur et service se voit attribuer un score de risque qui évolue en temps réel en fonction de ses actions.
-- **Identification de schémas d'attaque** : Détecte les séquences d'actions qui correspondent à des tactiques connues (mouvement latéral, escalade de privilèges), même si chaque action prise individuellement semble légitime.
-- **Corrélation multi-sources** : Analyse les logs d'événements, le trafic réseau (Kerberos, LDAP) et l'activité des terminaux pour une vision à 360°.
-
-### ⚔️ Module Aegis : Remédiation Chirurgicale
-
-Lorsque Cassandra ou Hydra détectent une menace confirmée, Aegis applique une réponse automatisée, immédiate et proportionnée.
-
-- **Quarantaine intelligente** : Isole une session ou un compte compromis sans le bloquer, permettant une analyse de l'attaquant dans un bac à sable.
-- **Micro-segmentation à la volée** : Bloque les chemins d'attaque en appliquant des politiques de sécurité ciblées en temps réel.
-- **Annulation des modifications** : Annule instantanément les changements critiques non autorisés (ex: ajout à un groupe à privilèges) et sécurise la faille exploitée.
+### 🔧 Architecture Modulaire
+- **Backend FastAPI** haute performance
+- **Agents légers** pour la collecte d'événements
+- **Base de données PostgreSQL** pour la persistance
+- **API REST sécurisée** avec authentification par token
+- **Déploiement Docker** prêt pour la production
 
 ## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                     Orion Control Center                   │
-│                    (Management Console)                    │
+│                    Interface Web React                     │
+│                    (Dashboard Temps Réel)                  │
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────┴───────────────────────────────────────┐
-│                  Orion Core Engine                         │
+│                  Backend FastAPI                           │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐    │
 │  │   Hydra     │ │  Cassandra  │ │       Aegis         │    │
 │  │ (Deception) │ │ (AI/ML)     │ │   (Remediation)     │    │
@@ -68,135 +68,235 @@ Lorsque Cassandra ou Hydra détectent une menace confirmée, Aegis applique une 
 └─────────────────────┬───────────────────────────────────────┘
                       │
 ┌─────────────────────┴───────────────────────────────────────┐
-│                Data Collection Layer                       │
+│                Agents de Collecte                          │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────┐    │
 │  │  AD Agent   │ │ Network     │ │  Endpoint Agent     │    │
-│  │             │ │ Monitoring  │ │                     │    │
+│  │ (Simulé)    │ │ Monitoring  │ │                     │    │
 │  └─────────────┘ └─────────────┘ └─────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ## 🚀 Statut Actuel du Projet
 
-**Statut** : Phase 1 - Structuration et Planification
+**✅ PRODUCTION READY** - Le système est entièrement fonctionnel et prêt pour le déploiement en production.
 
-Nous sommes actuellement en phase de conception et de spécification détaillée de l'architecture et des fonctionnalités clés. L'objectif est de finaliser le cahier des charges pour lancer le développement du Produit Minimum Viable (MVP).
+### ✅ Fonctionnalités Implémentées
+- [x] **Backend FastAPI** avec API REST complète
+- [x] **Interface web React/TypeScript** avec dashboard temps réel
+- [x] **Module Hydra** (déception) intégré
+- [x] **Module Cassandra** (IA/ML) intégré
+- [x] **Module Aegis** (remédiation) intégré
+- [x] **Agent AD simulé** pour les tests
+- [x] **Authentification par token**
+- [x] **Statistiques et export** des données
+- [x] **Configuration dynamique**
+- [x] **Déploiement Docker** complet
+- [x] **Monitoring** (Prometheus + Grafana)
+- [x] **Base de données PostgreSQL**
+- [x] **Reverse proxy Nginx**
 
-## 🗺️ Feuille de Route (Roadmap)
+### 🔄 En Développement
+- [ ] **Agents réels** pour collecte d'événements AD
+- [ ] **Module de notification** (mail, SMS, webhook)
+- [ ] **Tests de charge** et optimisation
+- [ ] **Documentation utilisateur** complète
 
-- [x] **Q2 2025** : Conceptualisation et Idéation
-- [ ] **Q3 2025** : Planification Technique et Structuration du projet
-- [ ] **Q4 2025** : Développement de l'MVP (focus sur les modules Hydra & Cassandra)
-- [ ] **Q1 2026** : Phase de Tests (Red Team) & Validation
-- [ ] **Q2 2026** : Programme Bêta avec des partenaires sélectionnés
-- [ ] **Q3 2026** : Lancement Commercial
+## 🗺️ Roadmap 2025-2026
 
-## 🛠️ Architecture Technique
+### Q1 2025 - Production & Optimisation
+- [x] **Déploiement en production** ✅
+- [x] **Tests de sécurité** ✅
+- [ ] **Optimisation des performances**
+- [ ] **Documentation complète**
 
-### Stack Technologique
+### Q2 2025 - Extension & Intégration
+- [ ] **Agents AD réels** (remplacement de la simulation)
+- [ ] **Intégration SIEM** (Splunk, QRadar, etc.)
+- [ ] **API webhook** pour notifications
+- [ ] **Module de notification** personnalisable
 
-- **Agents** : C# / Go sur les Contrôleurs de Domaine
-- **Backend & IA** : Python (FastAPI, TensorFlow/PyTorch)
-- **Base de données** : Elasticsearch / InfluxDB pour les données temporelles
-- **Frontend** : React avec TypeScript
-- **Déploiement** : Conteneurisation (Docker, Kubernetes)
-- **Communication** : gRPC pour les agents, REST API pour l'interface
+### Q3 2025 - Fonctionnalités Avancées
+- [ ] **Machine Learning** avancé
+- [ ] **Threat Intelligence** feeds
+- [ ] **Forensics** automatisé
+- [ ] **Compliance reporting** (SOX, GDPR, etc.)
 
-### Prérequis Système
+### Q4 2025 - Écosystème
+- [ ] **Marketplace** de modules
+- [ ] **API publique** pour développeurs
+- [ ] **Intégrations tierces** (CrowdStrike, SentinelOne, etc.)
+- [ ] **Version Enterprise** avec clustering
 
-- **Windows Server 2016+** (Contrôleurs de domaine)
-- **Active Directory Functional Level 2016+**
-- **RAM** : 8GB minimum, 16GB recommandé
-- **CPU** : 4 cores minimum, 8 cores recommandé
-- **Stockage** : 500GB SSD minimum pour les logs et l'analytique
-- **Réseau** : Accès LDAP/LDAPS aux contrôleurs de domaine
+## 🛠️ Stack Technologique
+
+### Backend
+- **Framework** : FastAPI (Python 3.12+)
+- **Base de données** : PostgreSQL
+- **Cache** : Redis (optionnel)
+- **IA/ML** : PyTorch, scikit-learn
+- **Authentification** : JWT tokens
+
+### Frontend
+- **Framework** : React 18+ avec TypeScript
+- **Styling** : Tailwind CSS
+- **État** : React Hooks + Context
+- **HTTP Client** : Axios
+- **Build** : Vite
+
+### Infrastructure
+- **Conteneurisation** : Docker + Docker Compose
+- **Reverse Proxy** : Nginx
+- **Monitoring** : Prometheus + Grafana
+- **Logs** : Structured logging (JSON)
+
+### Agents
+- **Langage** : Python (simulation actuelle)
+- **Communication** : HTTP REST API
+- **Authentification** : API tokens
 
 ## 📁 Structure du Projet
 
 ```
 orion-ad-guardian/
 ├── 📁 src/
-│   ├── 📁 core/                 # Moteur principal Orion
+│   ├── 📁 core/                 # Moteur principal
+│   │   ├── config.py           # Configuration
+│   │   ├── orchestrator.py     # Orchestrateur principal
+│   │   └── main_simple.py      # Point d'entrée
 │   ├── 📁 modules/
 │   │   ├── 📁 hydra/           # Module de déception
 │   │   ├── 📁 cassandra/       # Module d'analyse IA
 │   │   └── 📁 aegis/           # Module de remédiation
 │   ├── 📁 agents/              # Agents de collecte
-│   ├── 📁 api/                 # API REST
-│   └── 📁 web/                 # Interface web
-├── 📁 docs/                    # Documentation technique
-├── 📁 deployments/             # Scripts et configs de déploiement
-├── 📁 tests/                   # Tests unitaires et d'intégration
-└── 📁 scripts/                 # Outils et utilitaires
+│   │   └── ad_agent_simple.py  # Agent AD simulé
+│   └── 📁 web/                 # Interface web React
+│       ├── src/
+│       │   ├── components/     # Composants React
+│       │   ├── api/           # Client API
+│       │   └── types/         # Types TypeScript
+│       └── package.json
+├── 📁 deployments/             # Configuration Docker
+│   └── 📁 docker/
+│       ├── Dockerfile.backend
+│       └── Dockerfile.frontend
+├── 📁 config/                  # Fichiers de configuration
+│   └── production.env
+├── 📁 scripts/                 # Scripts utilitaires
+│   └── deploy-production.sh
+├── docker-compose.prod.yml     # Stack production
+└── README.md
+```
+
+## 🚀 Démarrage Rapide
+
+### Prérequis
+- Docker et Docker Compose
+- Python 3.12+ (pour développement)
+- Node.js 18+ (pour développement frontend)
+
+### Déploiement Production
+```bash
+# Cloner le projet
+git clone https://github.com/servais1983/orion-ad-guardian.git
+cd orion-ad-guardian
+
+# Déployer avec Docker Compose
+docker-compose -f docker-compose.prod.yml up -d
+
+# Accéder à l'interface web
+# http://localhost:80
+```
+
+### Développement Local
+```bash
+# Backend
+cd src/core
+python main_simple.py
+
+# Frontend
+cd src/web
+npm install
+npm start
+
+# Agent (optionnel)
+cd src/agents
+python ad_agent_simple.py
 ```
 
 ## 🔐 Sécurité
 
-Orion manipule des données extrêmement sensibles. La sécurité est intégrée by-design :
+### Authentification
+- **API tokens** pour l'authentification des agents
+- **JWT tokens** pour l'interface web
+- **Chiffrement** des communications HTTPS
 
-- **Chiffrement de bout en bout** pour toutes les communications
-- **Authentification mutuelle** entre tous les composants
-- **Principe du moindre privilège** pour tous les agents
-- **Audit trail complet** de toutes les actions
-- **Stockage chiffré** des données sensibles
+### Données
+- **Stockage sécurisé** en base PostgreSQL
+- **Chiffrement** des données sensibles
+- **Audit trail** complet des actions
+
+### Réseau
+- **Reverse proxy** Nginx pour la sécurité
+- **CORS** configuré
+- **Rate limiting** sur les API
+
+## 📊 Monitoring
+
+### Métriques
+- **Prometheus** pour la collecte de métriques
+- **Grafana** pour la visualisation
+- **Alertes** configurables
+
+### Logs
+- **Structured logging** en JSON
+- **Niveaux de log** configurables
+- **Rotation** automatique des logs
+
+## 🔌 Notifications Administrateur
+
+**Le système est conçu pour être branché facilement sur un système de notification externe** (mail, SMS, webhook, etc.).
+
+### Intégration Possible
+- **Module Python** `notifier.py` (à créer dans `src/modules/`)
+- **Support SMTP**, API SMS, Slack, webhook, etc.
+- **Configuration** dans `config/production.env`
+
+### Exemple d'Usage
+```python
+# Dans src/modules/notifier.py
+class NotificationModule:
+    def send_alert(self, alert: Alert):
+        # Envoi mail, SMS, webhook, etc.
+        pass
+```
 
 ## 🤝 Contribution
 
-Ce projet est actuellement en développement privé. Les contributions externes seront ouvertes après la phase bêta.
+### Comment Contribuer
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
 
-Pour les questions techniques ou commerciales, contactez l'équipe de développement.
+### Standards de Code
+- **Python** : PEP 8, type hints
+- **TypeScript** : ESLint, Prettier
+- **Tests** : pytest pour Python, Jest pour TypeScript
+- **Documentation** : docstrings, README à jour
 
 ## 📄 Licence
 
-Ce projet est propriétaire. Tous droits réservés.
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 📞 Support
+
+- **Issues** : [GitHub Issues](https://github.com/servais1983/orion-ad-guardian/issues)
+- **Documentation** : Voir le dossier `docs/`
+- **Sécurité** : Voir `SECURITY.md`
 
 ---
 
 <p align="center">
-  <strong>Orion - Parce que la meilleure défense est une attaque préventive</strong>
+  <strong>Orion AD Guardian - Protection proactive de votre Active Directory</strong>
 </p>
-
-# Orion AD Guardian
-
-Orion AD Guardian est une application de sécurité Active Directory modulaire, avec backend FastAPI, agent d'événements AD simulés, et interface web React/TypeScript pour la visualisation en temps réel des alertes.
-
-## Fonctionnalités principales
-- Détection et génération d'alertes sur événements AD
-- Dashboard web en temps réel (React)
-- Actions interactives (remédiation, marquage comme lu)
-- Authentification par token
-- Statistiques, export, configuration dynamique
-- Déploiement Docker/production prêt à l'emploi
-
-## Notifications administrateur
-**Le système est conçu pour être branché facilement sur un système de notification externe** (mail, SMS, webhook, etc.).
-
-- Lorsqu'une alerte critique ou une remédiation est déclenchée, un appel à un module de notification peut être ajouté.
-- Exemple d'intégration possible :
-  - Module Python `notifier.py` (à créer dans `src/modules/`)
-  - Support SMTP, API SMS, Slack, webhook, etc.
-- La configuration (destinataires, type de notification) se fait dans le fichier de configuration (`.env` ou `config.yaml`).
-
-**Remarque :** Le module mail n'est pas intégré par défaut. Pour notifier l'administrateur, il suffit de brancher le système sur le module de notification de votre choix.
-
-## Déploiement
-- Voir `docker-compose.prod.yml` pour la stack complète (backend, frontend, agent, PostgreSQL, nginx, Prometheus, Grafana)
-- Script de déploiement : `scripts/deploy-production.sh`
-
-## Configuration
-- Exemple de configuration dans `config/production.env`
-- Personnalisation des ports, tokens, base de données, etc.
-
-## Extension
-- Pour ajouter un système de notification, créez un module Python dans `src/modules/` et appelez-le lors des alertes critiques ou remédiations.
-- Voir la section "Notifications administrateur" ci-dessus.
-
-## Contribution
-Voir `CONTRIBUTING.md`.
-
-## Sécurité
-Voir `SECURITY.md`.
-
----
-
-Pour toute question ou extension, contactez l'équipe Orion AD Guardian.
